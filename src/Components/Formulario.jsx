@@ -1,5 +1,6 @@
 import React from "react";
 import { nanoid } from "nanoid";
+import { firebase } from "../firebase";
 
 const Formulario = () => {
   const [id, setId] = React.useState(0);
@@ -17,7 +18,26 @@ const Formulario = () => {
   const [error, setError] = React.useState(null);
 
   React.useEffect(() => {
-    console.log("Toy aqui");
+    const obtenerDatos = async () => {
+      try {
+        const db = firebase.firestore();
+        const data = await db.collection("Tablapuntos").get();
+        const arrayData = data.docs.map((item) => ({
+          id: item.id,
+          ...item.data(),
+        }));
+        console.log(arrayData);
+
+        setListaequipos(arrayData);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    obtenerDatos();
+  });
+
+  React.useEffect(() => {
     const partidosganadosnum = parseInt(
       partidosganados === "" ? 0 : partidosganados
     );
@@ -78,9 +98,8 @@ const Formulario = () => {
     }
 
     try {
-      //const db = firebase.firestore();
+      const db = firebase.firestore();
       const nuevoequipo = {
-        id: nanoid(),
         nombreEquipo: nombreequipo,
         Puntos: puntos,
         partidosJugados: partidosjugados,
@@ -92,9 +111,23 @@ const Formulario = () => {
         golesdeDiferencia: golesfavor - golescontra,
       };
 
-      //await db.collection("fruta").add(nuevaFruta);
+      await db.collection("Tablapuntos").add(nuevoequipo);
 
-      setListaequipos([...listaequipos, nuevoequipo]);
+      setListaequipos([
+        ...listaequipos,
+        {
+          id: nanoid(),
+          nombreEquipo: nombreequipo,
+          Puntos: puntos,
+          partidosJugados: partidosjugados,
+          partidosGanados: partidosganados,
+          partidosEmpatados: partidosempatados,
+          partidosPerdidos: partidosperdidos,
+          golesaFavor: golesfavor,
+          golesContra: golescontra,
+          golesdeDiferencia: golesfavor - golescontra,
+        },
+      ]);
 
       setNombreequipo("");
       setPuntos(0);
@@ -178,11 +211,22 @@ const Formulario = () => {
     }
 
     try {
-      /* //const db = firebase.firestore();
-      //await db.collection("fruta").doc(id).update({
-        nombreFruta: fruta,
-        nombreDescripcion: descripcion,
-      })*/
+      const db = firebase.firestore();
+      await db
+        .collection("Tablapuntos")
+        .doc(id)
+        .update({
+          id: nanoid(),
+          nombreEquipo: nombreequipo,
+          Puntos: puntos,
+          partidosJugados: partidosjugados,
+          partidosGanados: partidosganados,
+          partidosEmpatados: partidosempatados,
+          partidosPerdidos: partidosperdidos,
+          golesaFavor: golesfavor,
+          golesContra: golescontra,
+          golesdeDiferencia: golesfavor - golescontra,
+        });
 
       const arrayEditado = listaequipos.map((item) =>
         item.id === id
@@ -219,10 +263,11 @@ const Formulario = () => {
   };
   const eliminar = async (id) => {
     try {
-      // const db = firebase.firestore();
-      //await db.collection("fruta").doc(id).delete();
+      const db = firebase.firestore();
+      await db.collection("Tablapuntos").doc(id).delete();
       const aux = listaequipos.filter((item) => item.id !== id);
       setListaequipos(aux);
+      console.log(aux);
     } catch (error) {
       console.log(error);
     }
