@@ -5,120 +5,240 @@ const Formulario = () => {
   const [id, setId] = React.useState(0);
   const [nombreequipo, setNombreequipo] = React.useState("");
   const [puntos, setPuntos] = React.useState(0);
-  const [partidosjugados, setPartidosJugados] = React.useState(0);
-  const [partidosganados, setPartidosGanados] = React.useState(0);
-  const [partidosempatados, setPartidosEmptados] = React.useState(0);
-  const [partidosperdidos, setPartidosperdidos] = React.useState(0);
-  const [golesfavor, setGolesfavor] = React.useState(0);
-  const [golescontra, setGolescontra] = React.useState(0);
+  const [partidosjugados, setPartidosJugados] = React.useState("");
+  const [partidosganados, setPartidosGanados] = React.useState("");
+  const [partidosempatados, setPartidosEmptados] = React.useState("");
+  const [partidosperdidos, setPartidosperdidos] = React.useState("");
+  const [golesfavor, setGolesfavor] = React.useState("");
+  const [golescontra, setGolescontra] = React.useState("");
   const [diferenciagoles, setDiferenciaGoles] = React.useState(0);
   const [listaequipos, setListaequipos] = React.useState([]);
+  const [modoEdicion, setModoEdicion] = React.useState(false);
   const [error, setError] = React.useState(null);
+
+  React.useEffect(() => {
+    console.log("Toy aqui");
+    const partidosganadosnum = parseInt(
+      partidosganados === "" ? 0 : partidosganados
+    );
+    const partidosempuatdosnum = parseInt(
+      partidosempatados === "" ? 0 : partidosempatados
+    );
+    const partidosperdidosnum = parseInt(
+      partidosperdidos === "" ? 0 : partidosperdidos
+    );
+    setPuntos(partidosganadosnum * 3 + partidosempuatdosnum);
+    setPartidosJugados(
+      partidosganadosnum + partidosempuatdosnum + partidosperdidosnum
+    );
+  }, [partidosganados, partidosempatados, partidosperdidos]);
 
   const guardarequipos = async (e) => {
     e.preventDefault();
 
     if (!nombreequipo.trim()) {
-      setError("Digite el nombre del equipo");
+      alert("Digite el nombre del equipo");
       return;
     }
 
-    if (!puntos.trim()) {
-      setError("Digite los puntos del equipo");
-      return;
-    } else if (puntos >= 0) {
-      setError("El numero no puede ser negativo");
-      return;
-    }
-    if (!partidosjugados.trim()) {
-      setError("Digite los partidos jugados");
-      return;
-    } else if (partidosjugados >= 0) {
-      setError("El numero no puede ser negativo");
-      return;
-    }
     if (!partidosempatados.trim()) {
-      setError("Digite los partidos empatados");
+      alert("Digite los partidos empatados");
       return;
-    } else if (partidosempatados >= 0) {
-      setError("El numero no puede ser negativo");
+    } else if (partidosempatados <= 0) {
+      alert("El numero no puede ser negativo");
       return;
     }
     if (!partidosganados.trim()) {
-      setError("Digite los partidos ganados");
+      alert("Digite los partidos ganados");
       return;
-    } else if (partidosganados >= 0) {
-      setError("El numero no puede ser negativo");
+    } else if (partidosganados <= 0) {
+      alert("El numero no puede ser negativo");
       return;
     }
     if (!partidosperdidos.trim()) {
-      setError("Digite los partidos perdidos");
+      alert("Digite los partidos perdidos");
       return;
-    } else if (partidosperdidos >= 0) {
-      setError("El numero no puede ser negativo");
+    } else if (partidosperdidos <= 0) {
+      alert("El numero no puede ser negativo");
       return;
     }
     if (!golesfavor.trim()) {
-      setError("Digite los goles a favor");
+      alert("Digite los goles a favor");
       return;
-    } else if (golesfavor >= 0) {
-      setError("El numero no puede ser negativo");
+    } else if (golesfavor <= 0) {
+      alert("El numero no puede ser negativo");
       return;
     }
     if (!golescontra.trim()) {
-      setError("Digite los goles en contra");
+      alert("Digite los goles en contra");
       return;
-    } else if (golescontra >= 0) {
-      setError("El numero no puede ser negativo");
+    } else if (golescontra <= 0) {
+      alert("El numero no puede ser negativo");
       return;
     }
 
     try {
       //const db = firebase.firestore();
       const nuevoequipo = {
-        id: id,
+        id: nanoid(),
         nombreEquipo: nombreequipo,
         Puntos: puntos,
         partidosJugados: partidosjugados,
         partidosGanados: partidosganados,
         partidosEmpatados: partidosempatados,
-        partidosPerdidos: partidosempatados,
+        partidosPerdidos: partidosperdidos,
         golesaFavor: golesfavor,
         golesContra: golescontra,
-        golesdeDiferencia: diferenciagoles,
+        golesdeDiferencia: golesfavor - golescontra,
       };
 
       //await db.collection("fruta").add(nuevaFruta);
 
-      setListaequipos([
-        ...listaequipos,
-        {
-          id: nanoid(),
-          nombreEquipo: nombreequipo,
-          Puntos: puntos,
-          partidosJugados: partidosjugados,
-          partidosGanados: partidosganados,
-          partidosEmpatados: partidosempatados,
-          partidosPerdidos: partidosempatados,
-          golesaFavor: golesfavor,
-          golesContra: golescontra,
-          golesdeDiferencia: Math.abs(golesfavor - golescontra),
-        },
-      ]);
+      setListaequipos([...listaequipos, nuevoequipo]);
 
-      e.target.reset();
       setNombreequipo("");
       setPuntos(0);
-      setPartidosGanados(0);
-      setGolescontra(0);
-      setGolesfavor(0);
-      setPartidosperdidos(0);
-      setPartidosEmptados(0);
+      setPartidosGanados("");
+      setGolescontra("");
+      setGolesfavor("");
+      setPartidosperdidos("");
+      setPartidosEmptados("");
       setPartidosJugados(0);
+      setDiferenciaGoles(0);
       setError(null);
     } catch (error) {
       console.log(error);
     }
+  };
+  const changePartido = (e) => {
+    if (e.target.name === "golesContra") {
+      setGolescontra(e.target.value);
+      setDiferenciaGoles(golesfavor - e.target.value);
+    } else {
+      setGolesfavor(e.target.value);
+      setDiferenciaGoles(e.target.value - golescontra);
+    }
+  };
+  const editar = (item) => {
+    setNombreequipo(item.nombreEquipo);
+    setPuntos(item.Puntos);
+    setPartidosJugados(item.partidosJugados);
+    setPartidosGanados(item.partidosGanados);
+    setPartidosEmptados(item.partidosEmpatados);
+    setPartidosperdidos(item.partidosPerdidos);
+    setGolesfavor(item.golesaFavor);
+    setGolescontra(item.golesContra);
+    setDiferenciaGoles(item.Diferenciagoles);
+    setModoEdicion(true);
+    setId(item.id);
+    console.log(item);
+  };
+  const editarEquipos = async (e) => {
+    e.preventDefault();
+
+    if (!nombreequipo.trim()) {
+      alert("Digite el nombre del equipo");
+      return;
+    }
+
+    if (!partidosempatados.trim()) {
+      alert("Digite los partidos empatados");
+      return;
+    } else if (partidosempatados <= 0) {
+      alert("El numero no puede ser negativo");
+      return;
+    }
+    if (!partidosganados.trim()) {
+      alert("Digite los partidos ganados");
+      return;
+    } else if (partidosganados <= 0) {
+      alert("El numero no puede ser negativo");
+      return;
+    }
+    if (!partidosperdidos.trim()) {
+      alert("Digite los partidos perdidos");
+      return;
+    } else if (partidosperdidos <= 0) {
+      alert("El numero no puede ser negativo");
+      return;
+    }
+    if (!golesfavor.trim()) {
+      alert("Digite los goles a favor");
+      return;
+    } else if (golesfavor <= 0) {
+      alert("El numero no puede ser negativo");
+      return;
+    }
+    if (!golescontra.trim()) {
+      alert("Digite los goles en contra");
+      return;
+    } else if (golescontra <= 0) {
+      alert("El numero no puede ser negativo");
+      return;
+    }
+
+    try {
+      /* //const db = firebase.firestore();
+      //await db.collection("fruta").doc(id).update({
+        nombreFruta: fruta,
+        nombreDescripcion: descripcion,
+      })*/
+
+      const arrayEditado = listaequipos.map((item) =>
+        item.id === id
+          ? {
+              id: nanoid(),
+              nombreEquipo: nombreequipo,
+              Puntos: puntos,
+              partidosJugados: partidosjugados,
+              partidosGanados: partidosganados,
+              partidosEmpatados: partidosempatados,
+              partidosPerdidos: partidosperdidos,
+              golesaFavor: golesfavor,
+              golesContra: golescontra,
+              golesdeDiferencia: golesfavor - golescontra,
+            }
+          : item
+      );
+
+      setListaequipos(arrayEditado);
+      setNombreequipo("");
+      setPuntos("");
+      setPartidosJugados("");
+      setPartidosGanados("");
+      setPartidosEmptados("");
+      setPartidosperdidos("");
+      setGolesfavor("");
+      setGolescontra("");
+      setDiferenciaGoles("");
+      setModoEdicion(false);
+      setId("");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const eliminar = async (id) => {
+    try {
+      // const db = firebase.firestore();
+      //await db.collection("fruta").doc(id).delete();
+      const aux = listaequipos.filter((item) => item.id !== id);
+      setListaequipos(aux);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const cancelar = () => {
+    setNombreequipo("");
+    setPuntos("");
+    setPartidosJugados("");
+    setPartidosGanados("");
+    setPartidosEmptados("");
+    setPartidosperdidos("");
+    setGolesfavor("");
+    setGolescontra("");
+    setDiferenciaGoles("");
+    setModoEdicion(false);
+    setId("");
   };
 
   return (
@@ -127,10 +247,10 @@ const Formulario = () => {
         TABLA CLASIFICATORIA AL MUNDIAL DE QTAR
       </h1>
       <hr />
-      <div class="container">
-        <div class="row">
-          <div class="col">
-            <table class="table">
+      <div className="container">
+        <div className="row">
+          <div className="col">
+            <table className="table">
               <thead>
                 <tr>
                   <th scope="col">#</th>
@@ -146,80 +266,151 @@ const Formulario = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <th scope="row">1</th>
-                  <td>Mark</td>
-                  <td>Otto</td>
-                  <td>@mdo</td>
-                </tr>
+                {listaequipos
+                  .sort((a, b) => b.Puntos - a.Puntos)
+                  .map((item, index) => (
+                    <tr key={item.id}>
+                      <th>{index + 1}</th>
+                      <td>{item.nombreEquipo}</td>
+                      <td>{item.Puntos}</td>
+                      <td>{item.partidosJugados}</td>
+                      <td>{item.partidosGanados}</td>
+                      <td>{item.partidosEmpatados}</td>
+                      <td>{item.partidosPerdidos}</td>
+                      <td>{item.golesaFavor}</td>
+                      <td>{item.golesContra}</td>
+                      <td>{item.golesdeDiferencia}</td>
+                      <td>
+                        <button
+                          className="btn btn-danger btn-sm float-end mx-2"
+                          onClick={() => eliminar(item.id)}
+                        >
+                          Eliminar
+                        </button>
+                      </td>
+                      <td>
+                        <button
+                          className="btn btn-warning btn-sm float-end "
+                          onClick={() => editar(item)}
+                        >
+                          Editar
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
 
-          <div class="col">
-            <h6 class="card-subtitle mb-2 text-muted">Equipo</h6>
-            <input
-              className="form-control mb-2 "
-              type="text"
-              placeholder="Ingrese equipo"
-              onChange={(e) => setNombreequipo(e.target.value)}
-              value={nombreequipo}
-            />
-            <hr></hr>
-            <div class="col">
-              <h6 class="card-subtitle mb-2 text-muted">Puntos</h6>
+          <div className="col">
+            <form onSubmit={modoEdicion ? editarEquipos : guardarequipos}>
+              <h6 className="card-subtitle mb-2 text-muted">Equipo</h6>
+
               <input
                 className="form-control mb-2 "
-                type="number"
-                onChange={(e) => setPuntos(e.target.value)}
-                value={puntos}
+                type="text"
+                placeholder="Ingrese equipo"
+                onChange={(e) => setNombreequipo(e.target.value)}
+                value={nombreequipo}
               />
-              <h6 class="card-subtitle mb-2 text-muted">partidos Jugados</h6>
-              <input
-                className="form-control mb-2 "
-                type="number"
-                onChange={(e) => setPartidosJugados(e.target.value)}
-                value={partidosjugados}
-              />
-              <h6 class="card-subtitle mb-2 text-muted">Partidos Ganados</h6>
-              <input
-                className="form-control mb-2 "
-                type="number"
-                onChange={(e) => setPartidosGanados(e.target.value)}
-                value={partidosganados}
-              />
-              <h6 class="card-subtitle mb-2 text-muted">Partidos Empatados</h6>
-              <input
-                className="form-control mb-2 "
-                type="number"
-                onChange={(e) => setPartidosEmptados(e.target.value)}
-                value={partidosempatados}
-              />
-              <h6 class="card-subtitle mb-2 text-muted">Partidos Perdidos</h6>
-              <input
-                className="form-control mb-2 "
-                type="number"
-                onChange={(e) => setPartidosperdidos(e.target.value)}
-                value={partidosperdidos}
-              />
-              <h6 class="card-subtitle mb-2 text-muted">Goles a favor</h6>
-              <input
-                className="form-control mb-2 "
-                type="number"
-                onChange={(e) => setGolesfavor(e.target.value)}
-                value={golesfavor}
-              />
-              <h6 class="card-subtitle mb-2 text-muted">Goles en contra</h6>
-              <input
-                className="form-control mb-2 "
-                type="number"
-                onChange={(e) => setGolescontra(e.target.value)}
-                value={golescontra}
-              />
-              <button className="btn btn-primary btn-block" type="submit">
-                Agregar
-              </button>
-            </div>
+              <hr></hr>
+              <div className="col">
+                <h6 className="card-subtitle mb-2 text-muted">
+                  Partidos Ganados
+                </h6>
+                <input
+                  className="form-control mb-2 "
+                  type="number"
+                  onChange={(e) => setPartidosGanados(e.target.value)}
+                  value={partidosganados}
+                />
+                <h6 className="card-subtitle mb-2 text-muted">
+                  Partidos Empatados
+                </h6>
+                <input
+                  className="form-control mb-2 "
+                  type="number"
+                  onChange={(e) => setPartidosEmptados(e.target.value)}
+                  value={partidosempatados}
+                />
+                <h6 className="card-subtitle mb-2 text-muted">
+                  Partidos Perdidos
+                </h6>
+                <input
+                  className="form-control mb-2 "
+                  type="number"
+                  onChange={(e) => setPartidosperdidos(e.target.value)}
+                  value={partidosperdidos}
+                />
+                <h6 className="card-subtitle mb-2 text-muted">Goles a favor</h6>
+                <input
+                  name="golesFavor"
+                  className="form-control mb-2 "
+                  type="number"
+                  onChange={(e) => changePartido(e)}
+                  value={golesfavor}
+                />
+                <h6 className="card-subtitle mb-2 text-muted">
+                  Goles en contra
+                </h6>
+                <input
+                  name="golesContra"
+                  className="form-control mb-2 "
+                  type="number"
+                  onChange={(e) => changePartido(e)}
+                  value={golescontra}
+                />
+                <h6 className="card-subtitle mb-2 text-muted">Puntos</h6>
+                <input
+                  className="form-control mb-2  "
+                  type="number"
+                  onChange={(e) => setPuntos(e.target.value)}
+                  value={puntos}
+                  disabled
+                  title="Este campo es calculado con los partidos"
+                />
+                <h6 className="card-subtitle mb-2 text-muted">
+                  Partidos Jugados
+                </h6>
+                <input
+                  className="form-control mb-2 "
+                  type="number"
+                  onChange={(e) => setPartidosJugados(e.target.value)}
+                  value={partidosjugados}
+                  disabled
+                  title="Este campo es calculado con los partidos"
+                />
+                <h6 className="card-subtitle mb-2 text-muted">
+                  Diferencia de goles
+                </h6>
+                <input
+                  className="form-control mb-2  "
+                  type="number"
+                  onChange={(e) => setDiferenciaGoles(e.target.value)}
+                  value={diferenciagoles}
+                  disabled
+                  title="Este campo es calculado con los goles"
+                />
+
+                {modoEdicion ? (
+                  <>
+                    <button className="btn btn-warning btn-block" type="submit">
+                      Editar
+                    </button>
+                    <button
+                      className="btn btn-dark btn-block mx-2"
+                      onClick={() => cancelar()}
+                    >
+                      Cancelar
+                    </button>
+                  </>
+                ) : (
+                  <button className="btn btn-primary btn-block" type="submit">
+                    Agregar
+                  </button>
+                )}
+              </div>
+            </form>
           </div>
         </div>
       </div>
