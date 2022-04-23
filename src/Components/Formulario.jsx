@@ -1,5 +1,5 @@
 import React from "react";
-import { nanoid } from "nanoid";
+//import { nanoid } from "nanoid";
 import { firebase } from "../firebase";
 
 const Formulario = () => {
@@ -21,7 +21,7 @@ const Formulario = () => {
     const obtenerDatos = async () => {
       try {
         const db = firebase.firestore();
-        const data = await db.collection("Tablapuntos").get();
+        const data = await db.collection("listaEquiposfut").get();
         const arrayData = data.docs.map((item) => ({
           id: item.id,
           ...item.data(),
@@ -64,35 +64,35 @@ const Formulario = () => {
     if (!partidosempatados.trim()) {
       alert("Digite los partidos empatados");
       return;
-    } else if (partidosempatados <= 0) {
+    } else if (partidosempatados < 0) {
       alert("El numero no puede ser negativo");
       return;
     }
     if (!partidosganados.trim()) {
       alert("Digite los partidos ganados");
       return;
-    } else if (partidosganados <= 0) {
+    } else if (partidosganados < 0) {
       alert("El numero no puede ser negativo");
       return;
     }
     if (!partidosperdidos.trim()) {
       alert("Digite los partidos perdidos");
       return;
-    } else if (partidosperdidos <= 0) {
+    } else if (partidosperdidos < 0) {
       alert("El numero no puede ser negativo");
       return;
     }
     if (!golesfavor.trim()) {
       alert("Digite los goles a favor");
       return;
-    } else if (golesfavor <= 0) {
+    } else if (golesfavor < 0) {
       alert("El numero no puede ser negativo");
       return;
     }
     if (!golescontra.trim()) {
       alert("Digite los goles en contra");
       return;
-    } else if (golescontra <= 0) {
+    } else if (golescontra < 0) {
       alert("El numero no puede ser negativo");
       return;
     }
@@ -111,9 +111,9 @@ const Formulario = () => {
         golesdeDiferencia: golesfavor - golescontra,
       };
 
-      await db.collection("Tablapuntos").add(nuevoequipo);
+      await db.collection("listaEquiposfut").add(nuevoequipo);
 
-      setListaequipos([
+      /*setListaequipos([
         ...listaequipos,
         {
           id: nanoid(),
@@ -127,7 +127,7 @@ const Formulario = () => {
           golesContra: golescontra,
           golesdeDiferencia: golesfavor - golescontra,
         },
-      ]);
+      ]);*/
 
       setNombreequipo("");
       setPuntos(0);
@@ -139,6 +139,7 @@ const Formulario = () => {
       setPartidosJugados(0);
       setDiferenciaGoles(0);
       setError(null);
+      setId(0);
     } catch (error) {
       console.log(error);
     }
@@ -177,35 +178,35 @@ const Formulario = () => {
     if (!partidosempatados.trim()) {
       alert("Digite los partidos empatados");
       return;
-    } else if (partidosempatados <= 0) {
+    } else if (partidosempatados < 0) {
       alert("El numero no puede ser negativo");
       return;
     }
     if (!partidosganados.trim()) {
       alert("Digite los partidos ganados");
       return;
-    } else if (partidosganados <= 0) {
+    } else if (partidosganados < 0) {
       alert("El numero no puede ser negativo");
       return;
     }
     if (!partidosperdidos.trim()) {
       alert("Digite los partidos perdidos");
       return;
-    } else if (partidosperdidos <= 0) {
+    } else if (partidosperdidos < 0) {
       alert("El numero no puede ser negativo");
       return;
     }
     if (!golesfavor.trim()) {
       alert("Digite los goles a favor");
       return;
-    } else if (golesfavor <= 0) {
+    } else if (golesfavor < 0) {
       alert("El numero no puede ser negativo");
       return;
     }
     if (!golescontra.trim()) {
       alert("Digite los goles en contra");
       return;
-    } else if (golescontra <= 0) {
+    } else if (golescontra < 0) {
       alert("El numero no puede ser negativo");
       return;
     }
@@ -213,10 +214,9 @@ const Formulario = () => {
     try {
       const db = firebase.firestore();
       await db
-        .collection("Tablapuntos")
+        .collection("listaEquiposfut")
         .doc(id)
         .update({
-          id: nanoid(),
           nombreEquipo: nombreequipo,
           Puntos: puntos,
           partidosJugados: partidosjugados,
@@ -228,7 +228,7 @@ const Formulario = () => {
           golesdeDiferencia: golesfavor - golescontra,
         });
 
-      const arrayEditado = listaequipos.map((item) =>
+      /*const arrayEditado = listaequipos.map((item) =>
         item.id === id
           ? {
               id: nanoid(),
@@ -245,7 +245,7 @@ const Formulario = () => {
           : item
       );
 
-      setListaequipos(arrayEditado);
+      setListaequipos(arrayEditado);*/
       setNombreequipo("");
       setPuntos("");
       setPartidosJugados("");
@@ -264,10 +264,10 @@ const Formulario = () => {
   const eliminar = async (id) => {
     try {
       const db = firebase.firestore();
-      await db.collection("Tablapuntos").doc(id).delete();
-      const aux = listaequipos.filter((item) => item.id !== id);
-      setListaequipos(aux);
-      console.log(aux);
+      await db.collection("listaEquiposfut").doc(id).delete();
+      //const aux = listaequipos.filter((item) => item.id !== id);
+      //setListaequipos(aux);
+      //console.log(aux);
     } catch (error) {
       console.log(error);
     }
