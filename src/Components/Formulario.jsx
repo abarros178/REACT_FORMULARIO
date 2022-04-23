@@ -128,7 +128,7 @@ const Formulario = () => {
     setPartidosperdidos(item.partidosPerdidos);
     setGolesfavor(item.golesaFavor);
     setGolescontra(item.golesContra);
-    setDiferenciaGoles(item.Diferenciagoles);
+    setDiferenciaGoles(item.golesdeDiferencia);
     setModoEdicion(true);
     setId(item.id);
     console.log(item);
@@ -229,14 +229,14 @@ const Formulario = () => {
   };
   const cancelar = () => {
     setNombreequipo("");
-    setPuntos("");
-    setPartidosJugados("");
+    setPuntos(0);
+    setPartidosJugados(0);
     setPartidosGanados("");
     setPartidosEmptados("");
     setPartidosperdidos("");
     setGolesfavor("");
     setGolescontra("");
-    setDiferenciaGoles("");
+    setDiferenciaGoles(0);
     setModoEdicion(false);
     setId("");
   };
