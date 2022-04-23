@@ -21,7 +21,7 @@ const Formulario = () => {
     const obtenerDatos = async () => {
       try {
         const db = firebase.firestore();
-        const data = await db.collection("listaEquiposfut").get();
+        const data = await db.collection("listaequipos").get();
         const arrayData = data.docs.map((item) => ({
           id: item.id,
           ...item.data(),
@@ -111,7 +111,7 @@ const Formulario = () => {
         golesdeDiferencia: golesfavor - golescontra,
       };
 
-      await db.collection("listaEquiposfut").add(nuevoequipo);
+      await db.collection("listaequipos").add(nuevoequipo);
 
       /*setListaequipos([
         ...listaequipos,
@@ -214,7 +214,7 @@ const Formulario = () => {
     try {
       const db = firebase.firestore();
       await db
-        .collection("listaEquiposfut")
+        .collection("listaequipos")
         .doc(id)
         .update({
           nombreEquipo: nombreequipo,
@@ -264,7 +264,7 @@ const Formulario = () => {
   const eliminar = async (id) => {
     try {
       const db = firebase.firestore();
-      await db.collection("listaEquiposfut").doc(id).delete();
+      await db.collection("listaequipos").doc(id).delete();
       //const aux = listaequipos.filter((item) => item.id !== id);
       //setListaequipos(aux);
       //console.log(aux);
