@@ -1,0 +1,2 @@
+Amplify: https://main.d42bst1208oj6.amplifyapp.com/
+Netlify: https://main--splendorous-arithmetic-4bc0f4.netlify.app/
