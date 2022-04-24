@@ -15,7 +15,6 @@ const Formulario = () => {
   const [diferenciagoles, setDiferenciaGoles] = React.useState(0);
   const [listaequipos, setListaequipos] = React.useState([]);
   const [modoEdicion, setModoEdicion] = React.useState(false);
-  //const [error, setError] = React.useState(null);
 
   React.useEffect(() => {
     const obtenerDatos = async () => {
@@ -138,7 +137,7 @@ const Formulario = () => {
       setPartidosEmptados("");
       setPartidosJugados(0);
       setDiferenciaGoles(0);
-      //setError(null);
+
       setId(0);
     } catch (error) {
       console.log(error);
